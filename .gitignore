@@ -1,1 +1,6 @@
 .ipynb_checkpoints
+target
+*.lock
+*.pdb
+*.pyc
+*.exe
