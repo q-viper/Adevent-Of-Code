@@ -1,4 +1,4 @@
-use std::fs;
+use std::{array, fs};
 use std::collections::HashMap;
 
 fn read_data(file_path: &str) -> Result<(String, String), String> {
@@ -126,19 +126,105 @@ fn day1_solve(file_path: &str, data_part: &str){
 }
 
 
+fn is_safe1(elem_arr: Vec<i32>){
+//
+
+}
+
+fn day2_solve(file_path: &str, data_part: &str) {
+    // Read the parts first
+    let (part1, part2) = match read_data(file_path) {
+        Ok((part1, part2)) => (part1, part2),
+        Err(e) => {
+            eprintln!("{}", e);
+            return;
+        }
+    };
+    println!("{}", part1);
+    println!("{}", part2);
+
+    // Initialize vectors for test and train data
+
+    // Determine the current part to process
+    let mut curr_part: String = part1;
+    if data_part != "TEST" {
+        curr_part = part2;
+    }
+
+    // Parse `curr_part` into `test_data` or `train_data`
+    let mut safe_cnt: i32 = 0; // Counter for safe data
+    for line in curr_part.lines() {
+        let parts = line.split_whitespace(); // Split the line by spaces
+
+        let mut prev_elem = 0;
+        let mut is_inc = true; // Track if the sequence is increasing
+
+        let mut is_safe = true;
+        let elem_arr: Vec<i32> = parts.into_iter() // Iterate over string list
+        .map(|s| s.parse::<i32>().expect("Failed to parse")) // Parse each string to an integer
+        .collect(); 
+
+        for (i, elem) in parts.enumerate() {
+            // Parse element to integer
+            let element: i32 = elem.parse().expect("Failed to parse element");
+
+            if i == 0 {
+                // Initialize `prev_elem` on the first iteration
+                prev_elem = element;
+                continue;
+            }
+
+            // Check if sequence starts decreasing
+            if element - prev_elem < 0 && i == 1 {
+                is_inc = false;
+            }
+
+            // Check for invalid conditions
+            if (element - prev_elem).abs() > 3
+                || (element - prev_elem).abs() == 0
+                || (is_inc && element - prev_elem < 0)
+                || (!is_inc && element - prev_elem > 0)
+            {
+                is_safe=false;
+                break;
+
+            }
+
+            // Update `prev_elem`
+            prev_elem = element;
+        }
+
+        // If the line passes all checks, increment `safe_cnt`
+        if is_safe{
+            safe_cnt += 1;
+
+        }
+        
+    }
+
+    println!("Part 1 Safe count: {}", safe_cnt);
+
+    // now for the part 2
+
+}
+
+
+
 
 fn main() {
     // Specify the file path
-    let file_path = "D:/work/Adevent-Of-Code/2024/data/day1.txt";
+    // TEST or none
     let data_part: &str = "";
-    let curr_day = 1;
+    let curr_day = 2;
+    let file_path = &format!("D:/work/Adevent-Of-Code/2024/data/day{}.txt", curr_day);
+
 
     if curr_day == 1 {
         day1_solve(file_path, data_part);
     }
-    // if curr_day == 2 {
-    //     day2_solve(file_path, data_part);
-    // }
+    if curr_day == 2 {
+        day2_solve(file_path, data_part);
+    }
     // if curr_day == 3 {
     //     day3_solve(file_path, data_part);
     // }
